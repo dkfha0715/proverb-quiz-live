@@ -67,7 +67,7 @@ function renderBar(){
   if (configured && wantTeacher){
     if (teacherMode()){
       const fol = viewers.filter(v => v && v.following).length;
-      out.push(`<span class="chip">접속 ${viewers.length}명</span><span class="chip follow">따라오는 수강생 ${fol}명</span>`);
+      out.push(`<span class="chip">접속 ${viewers.length}명</span>`);
       out.push(`<button id="liveBtn" class="btn-live ${teacher.live ? 'on' : ''}">${teacher.live ? '■ 라이브 종료' : '● 라이브 시작'}</button>`);
       out.push(`<button id="logoutBtn">로그아웃</button>`);
     } else if (user){
@@ -76,7 +76,7 @@ function renderBar(){
       out.push(`<button id="loginBtn" class="btn-follow">강사 로그인 (Google)</button>`);
     }
   } else if (configured){
-    out.push(`<button id="followBtn" class="btn-follow ${following ? 'on' : ''}" ${teacher.live ? '' : 'disabled'} aria-pressed="${following}">${following ? '✓ 따라가는 중 (해제)' : '▶ 강사 화면 따라가기'}</button>`);
+    out.push(`<button id="goBtn" class="btn-follow" ${teacher.live ? '' : 'disabled'}>📍 수업 중 페이지</button>`);
   }
   $('bar').innerHTML = out.join('');
 
@@ -86,7 +86,7 @@ function renderBar(){
   $('hint').textContent = hint; $('hint').hidden = !hint;
 
   const lb = $('liveBtn'); if (lb) lb.onclick = toggleLive;
-  const fb = $('followBtn'); if (fb) fb.onclick = () => following ? stopFollow('따라가기를 해제했어요') : startFollow();
+  const gb = $('goBtn'); if (gb) gb.onclick = goToTeacher;
   const li = $('loginBtn'); if (li) li.onclick = login;
   const lo = $('logoutBtn'); if (lo) lo.onclick = () => firebase.auth().signOut();
 }
@@ -113,25 +113,25 @@ function renderPosition(){
   const ti = idx(teacher.sec), mi = idx(mySec);
   const name = `<b>${titleOf(teacher.sec)}</b>`;
   let html;
-  if (following){
-    html = `<span class="msg">📍 강사를 따라가는 중 · ${name}</span><button data-act="stop">해제</button>`;
-    bar.classList.add('same');
-  } else if (ti === mi){
-    html = `<span class="msg">✓ 강사와 같은 곳을 보고 있어요 · ${name}</span><button data-act="follow" class="btn-follow">따라가기</button>`;
+  if (ti === mi){
+    html = `<span class="msg">✓ 수업 중인 페이지를 보고 있어요 · ${name}</span>`;
     bar.classList.add('same');
   } else {
     const dir = ti > mi ? '↓ 아래쪽' : '↑ 위쪽';
-    html = `<span class="msg">📍 지금 강사는 ${name} 설명 중 <span class="muted">(${dir})</span></span><button data-act="go">그곳으로 이동</button><button data-act="follow" class="btn-follow">따라가기</button>`;
+    html = `<span class="msg">📍 지금 수업 중 · ${name} <span class="muted">(${dir})</span></span><button data-act="go" class="btn-follow">수업 중 페이지로 이동</button>`;
     bar.classList.remove('same');
   }
   bar.innerHTML = html; bar.hidden = false;
 }
 $('livebar').addEventListener('click', e => {
   const b = e.target.closest('button[data-act]'); if (!b) return;
-  if (b.dataset.act === 'go') scrollToSec(teacher.sec);
-  if (b.dataset.act === 'follow') startFollow();
-  if (b.dataset.act === 'stop') stopFollow('따라가기를 해제했어요');
+  if (b.dataset.act === 'go') goToTeacher();
 });
+/* 수업 중 페이지로 한 번 이동 (자동으로 끌고 가지 않음) */
+function goToTeacher(){
+  if (!teacher.live) return;
+  scrollToSec(teacher.sec); toast('수업 중인 페이지로 이동했어요');
+}
 function flashBar(){
   const bar = $('livebar'); if (bar.hidden || reduced) return;
   bar.classList.remove('flash'); void bar.offsetWidth; bar.classList.add('flash');

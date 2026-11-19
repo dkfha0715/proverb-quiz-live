@@ -83,8 +83,22 @@ footer{text-align:center;color:var(--muted);font-size:16px}
 
 </style>
 
+<link rel="stylesheet" href="live.css">
 </head>
 <body>
+<div class="topbar">
+  <div class="crumb"><b>두뇌 쑥쑥 속담·사자성어 퀴즈 앱</b> <span id="roleLabel" class="muted"></span></div>
+  <div class="bar" id="bar"></div>
+  <p class="hint" id="hint" hidden></p>
+  <div class="track" id="track" hidden aria-hidden="true"><div class="rail"></div><div class="fill" id="tFill"></div><div class="mk t" id="tMk" title="강사 위치"></div><div class="mk me" id="meMk" title="내 위치"></div><span class="lbl" id="tLbl"></span></div>
+</div>
+<div class="livebar" id="livebar" hidden role="status" aria-live="polite"></div>
+<div class="lv-layout">
+  <nav class="toc" id="toc" aria-label="목차"></nav>
+  <main class="lv-main">
+    <article id="page">
+
+
 <div class="wrap">
 
   <section class="hero">
@@ -239,5 +253,16 @@ document.querySelectorAll('button[data-copy]').forEach(function(btn){
   });
 });
 </script>
+
+    </article>
+  </main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="live-firebase.js"></script>
 </body>
 </html>

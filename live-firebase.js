@@ -1,5 +1,5 @@
 /* live-firebase.js — 외부 호스팅판 라이브 기능 (Firebase Realtime Database)
- * 수강생: 로그인 없이 강사 위치 알림 · 진행 막대 · 📍 · 따라가기
+ * 수강생: 로그인 없이 강사 위치 알림 · 진행 막대 · 📍 · '수업 중 페이지' 버튼(누를 때만 한 번 이동, 자동으로 끌고 가지 않음)
  * 강사: 주소 뒤에 ?mode=teacher → Google 로그인(firebase-config.js의 teacherEmail 계정) → 라이브 시작
  * 데이터: /rooms/<room>/live {live, sec, at}  ·  /rooms/<room>/viewers/<id> {following, at}
  * room은 firebase-config.js의 LIVE_CONFIG.room (교안마다 다르게 하면 Firebase 프로젝트 하나로 여러 교안을 운영)
@@ -66,7 +66,6 @@ function renderBar(){
   }
   if (configured && wantTeacher){
     if (teacherMode()){
-      const fol = viewers.filter(v => v && v.following).length;
       out.push(`<span class="chip">접속 ${viewers.length}명</span>`);
       out.push(`<button id="liveBtn" class="btn-live ${teacher.live ? 'on' : ''}">${teacher.live ? '■ 라이브 종료' : '● 라이브 시작'}</button>`);
       out.push(`<button id="logoutBtn">로그아웃</button>`);

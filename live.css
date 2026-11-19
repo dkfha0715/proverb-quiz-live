@@ -33,6 +33,7 @@
 .topbar button:disabled{opacity:.45;cursor:not-allowed}
 .topbar .btn-follow,.livebar .btn-follow{background:var(--lv-blue);border-color:var(--lv-blue);color:#fff}
 .topbar .btn-follow.on{background:var(--lv-blue-soft);color:var(--lv-blue)}
+.topbar #goBtn{min-height:28px;padding:2px 10px;font-size:.78rem} /* 수강생 '수업 중 페이지' 버튼은 작게 */
 .topbar .btn-live.on{background:var(--lv-live);border-color:var(--lv-live);color:#fff}
 
 /* 진행 막대: 강사 위치(노랑) · 내 위치(파랑) */

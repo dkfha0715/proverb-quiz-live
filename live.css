@@ -1,0 +1,81 @@
+/* live.css — 교안 라이브 기능(강사 위치 따라가기) 전용 스타일
+ * 교안 본문 스타일은 건드리지 않고, 상단 라이브 바 · 왼쪽 목차 · 알림 바 · 진행 막대 · QR만 꾸며요.
+ * 색은 --lv-* 변수로 따로 둬서 교안 자체 변수와 섞이지 않아요. */
+:root{
+  --lv-bg:#ffffff; --lv-ink:#37352f; --lv-muted:#787774; --lv-line:#e9e9e7; --lv-hover:#f1f1ef; --lv-side:#f7f7f5;
+  --lv-blue:#2383e2; --lv-blue-soft:#e7f3f8; --lv-gray:#f1f1ef;
+  --lv-live:#d44c47; --lv-live-soft:#fdebec; --lv-here:#fbf3db; --lv-here-line:#d9a82b;
+  --lv-font:"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --lv-bg:#191919; --lv-ink:#e3e2df; --lv-muted:#9b9a97; --lv-line:#2f2f2f; --lv-hover:#2a2a2a; --lv-side:#202020;
+  --lv-blue:#529cca; --lv-blue-soft:#1e2c35; --lv-gray:#262626; --lv-live:#ff7369; --lv-live-soft:#3a2020; --lv-here:#3a331f}}
+:root[data-theme="dark"]{
+  --lv-bg:#191919; --lv-ink:#e3e2df; --lv-muted:#9b9a97; --lv-line:#2f2f2f; --lv-hover:#2a2a2a; --lv-side:#202020;
+  --lv-blue:#529cca; --lv-blue-soft:#1e2c35; --lv-gray:#262626; --lv-live:#ff7369; --lv-live-soft:#3a2020; --lv-here:#3a331f}
+
+/* 상단 라이브 바 */
+.topbar{position:sticky;top:0;z-index:20;background:var(--lv-bg);color:var(--lv-ink);border-bottom:1px solid var(--lv-line);font-family:var(--lv-font);
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;justify-content:space-between;padding:8px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px));box-sizing:border-box}
+.topbar .crumb{font-size:.9rem;color:var(--lv-muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topbar .crumb b{color:var(--lv-ink);font-weight:500}
+.topbar .bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.topbar .hint{font-size:.85rem;color:var(--lv-muted);width:100%;margin:0}
+.topbar .muted,.livebar .muted{color:var(--lv-muted)}
+.topbar .chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:6px;font-size:.84rem;background:var(--lv-gray);color:var(--lv-muted);white-space:nowrap}
+.topbar .chip.live{background:var(--lv-live-soft);color:var(--lv-live);font-weight:500}
+.topbar .chip.follow{background:var(--lv-blue-soft);color:var(--lv-blue);font-weight:500}
+.topbar .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.topbar .chip.live .dot{animation:lv-pulse 1.4s ease-in-out infinite}
+@keyframes lv-pulse{50%{opacity:.25}}
+.topbar button,.livebar button{font-family:var(--lv-font);font-size:.92rem;font-weight:500;border-radius:6px;border:1px solid var(--lv-line);background:var(--lv-bg);color:var(--lv-ink);padding:6px 12px;cursor:pointer;min-height:36px}
+.topbar button:hover:not(:disabled),.livebar button:hover:not(:disabled){background:var(--lv-hover)}
+.topbar button:disabled{opacity:.45;cursor:not-allowed}
+.topbar .btn-follow,.livebar .btn-follow{background:var(--lv-blue);border-color:var(--lv-blue);color:#fff}
+.topbar .btn-follow.on{background:var(--lv-blue-soft);color:var(--lv-blue)}
+.topbar .btn-live.on{background:var(--lv-live);border-color:var(--lv-live);color:#fff}
+
+/* 진행 막대: 강사 위치(노랑) · 내 위치(파랑) */
+.track{position:relative;width:100%;height:18px}
+.track .rail{position:absolute;left:0;right:0;top:8px;height:3px;border-radius:2px;background:var(--lv-line)}
+.track .fill{position:absolute;left:0;top:8px;height:3px;border-radius:2px;background:var(--lv-here-line);transition:width .4s}
+.track .mk{position:absolute;top:2px;width:15px;height:15px;margin-left:-7px;border-radius:50%;border:2px solid var(--lv-bg);box-sizing:border-box;transition:left .4s}
+.track .mk.t{background:var(--lv-here-line)} .track .mk.me{background:var(--lv-blue);width:11px;height:11px;margin-left:-5px;top:4px}
+.track .lbl{position:absolute;right:0;top:-1px;font-size:.72rem;color:var(--lv-muted);background:var(--lv-bg);padding-left:6px}
+
+/* 왼쪽 목차 + 본문 */
+.lv-layout{display:grid;grid-template-columns:250px minmax(0,1fr)}
+nav.toc{position:sticky;top:53px;align-self:start;height:calc(100vh - 53px);overflow:auto;background:var(--lv-side);border-right:1px solid var(--lv-line);padding:18px 10px 40px;box-sizing:border-box;font-family:var(--lv-font)}
+nav.toc .t{font-size:.78rem;color:var(--lv-muted);font-weight:500;padding:0 8px 6px}
+nav.toc a{display:flex;justify-content:space-between;gap:6px;align-items:center;color:var(--lv-ink);text-decoration:none;font-size:.88rem;padding:4px 8px;border-radius:5px;line-height:1.45;word-break:keep-all;overflow-wrap:anywhere}
+nav.toc a:hover{background:var(--lv-hover)}
+nav.toc a.h3{padding-left:22px;color:var(--lv-muted);font-size:.84rem}
+nav.toc a.cur{background:var(--lv-hover);font-weight:500;color:var(--lv-ink)}
+nav.toc a .pin{font-size:.72rem;color:var(--lv-here-line);font-weight:700;white-space:nowrap}
+.lv-main{min-width:0;padding:32px max(16px,env(safe-area-inset-right,0px)) 160px max(16px,env(safe-area-inset-left,0px))}
+#page h2,#page h3{scroll-margin-top:70px;border-radius:6px;transition:background .3s}
+#page h2.here,#page h3.here{background:var(--lv-here);box-shadow:-6px 0 0 var(--lv-here),6px 0 0 var(--lv-here)}
+#page h2.here::after,#page h3.here::after{content:"📍 강사 위치";font-size:.72rem;font-weight:700;color:var(--lv-here-line);margin-left:10px;vertical-align:middle;white-space:nowrap}
+
+/* 화면 아래 강사 위치 알림 바 */
+.livebar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:35;font-family:var(--lv-font);color:var(--lv-ink);
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;justify-content:center;width:max-content;max-width:calc(100% - 32px);box-sizing:border-box;
+  background:var(--lv-bg);border:1px solid var(--lv-here-line);border-radius:12px;padding:10px 12px 10px 14px;box-shadow:0 6px 24px rgba(0,0,0,.14)}
+.livebar .msg{font-size:.94rem;min-width:0;word-break:keep-all}
+.livebar.same{border-color:var(--lv-line)}
+.livebar.flash{animation:lv-flash 1.2s ease-out 2}
+@keyframes lv-flash{0%{box-shadow:0 0 0 0 var(--lv-here-line)}100%{box-shadow:0 0 0 12px transparent}}
+.livebar button{min-height:34px;padding:5px 12px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:40;background:var(--lv-ink);color:var(--lv-bg);font-family:var(--lv-font);
+  padding:9px 16px;border-radius:8px;font-size:.92rem;max-width:calc(100% - 32px);box-sizing:border-box;text-align:center}
+.toast.up{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+[hidden]{display:none!important}
+
+/* 휴대폰으로 열기 QR */
+.qrbox{float:right;margin:0 0 12px 18px;padding:10px 10px 8px;border:1px solid #e3e2de;border-radius:10px;background:#fff;text-align:center;font-size:.8rem;color:#37352f;font-family:var(--lv-font)}
+.qrbox #qr{width:132px;height:132px}.qrbox #qr img,.qrbox #qr canvas{width:132px!important;height:132px!important}
+.qrbox .cap{margin-top:6px;line-height:1.35}
+
+@media (max-width:900px){.lv-layout{grid-template-columns:minmax(0,1fr)} nav.toc{display:none}}
+@media (max-width:640px){.qrbox{display:none}}
+@media (prefers-reduced-motion:reduce){.topbar .chip.live .dot{animation:none} #page h2,#page h3{transition:none}}
